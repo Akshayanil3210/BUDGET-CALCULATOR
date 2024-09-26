@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Budget Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .container{
+            width: 80%;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="container mt-5 pt-3 border shadow">
+        <div class="row">
+            <div class="col-4 " id="Username" ></div>
+            <div class="col-4"><h1 class="text-center">Budget Calculator</h1></div>
+            <div class="col-4 mt-2 " style="padding-left: 250px;"> <button type="button" onclick="logout()" class="btn btn-danger">Logout</button></div>
+        </div><br>
+        
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="form-group">
+                    <label for="totalIncomeInput">Total Income (₹):</label>
+                    <input type="number" id="totalIncomeInput" class="form-control" placeholder="Enter total income" />
+                    <div class="text-center">
+                        <button class="btn btn-primary mt-2" onclick="setTotalIncome()">Submit Total Income</button>
+                </div>
+                    </div>
+                
+                <div class="form-group">
+                    <label for="rentInput">Rent (₹):</label>
+                    <input type="number" id="rentInput" class="form-control" placeholder="Enter rent amount" />
+                </div>
+                
+                <div class="form-group">
+                    <label for="groceriesInput">Groceries (₹):</label>
+                    <input type="number" id="groceriesInput" class="form-control" placeholder="Enter groceries amount" />
+                </div>
+
+                <div class="form-group">
+                    <label for="transportationInput">Transportation (₹):</label>
+                    <input type="number" id="transportationInput" class="form-control" placeholder="Enter transportation amount" />
+                </div>
+
+                <div class="form-group">
+                    <label for="entertainmentInput">Entertainment (₹):</label>
+                    <input type="number" id="entertainmentInput" class="form-control" placeholder="Enter entertainment amount" />
+                </div>
+
+                <div class="form-group">
+                    <label for="otherExpensesInput">Other Expenses (₹):</label>
+                    <input type="number" id="otherExpensesInput" class="form-control" placeholder="Enter other expenses" />
+                </div>
+                <div class="text-center"><button class="btn btn-danger mt-2" onclick="submitAllExpenses()">Submit All Expenses</button>
+                </div>
+
+                
+                <div class="row">
+                    <div class="col-6"><h4 class="mt-4 p-2 bg-primary text-white">Balance: <span id="balance">0</span></h4></div>
+                    <div class="col-6"><h4 class="bg-danger mt-4 p-2 text-white">Expenses: <span id="expenses">0</span></h4></div>
+
+                    <div class="" style="padding-left: 690px;" >
+                        <button type="button" onclick="clearTransactions()" class="btn btn-warning">clear </button>
+                    </div>
+                </div><br>
+            </div>
+            <br>
+        </div>
+    </div><br><br>
+    
+
+    <script>
+
+      
+
+
+        let totalBalance = 0;
+        let totalExpenses = 0;
+
+        window.onload = function() {
+            totalBalance = parseFloat(localStorage.getItem('balance')) || 0;
+            totalExpenses = parseFloat(localStorage.getItem('expenses')) || 0;
+            document.getElementById('balance').innerText = totalBalance.toFixed(2);
+            document.getElementById('expenses').innerText = totalExpenses.toFixed(2);
+        };
+
+        function setTotalIncome() {
+            const totalIncome = parseFloat(document.getElementById('totalIncomeInput').value);
+            if (!isNaN(totalIncome) && totalIncome >= 0) {
+                totalBalance = totalIncome;
+                updateLocalStorage();
+                document.getElementById('balance').innerText = totalBalance.toFixed(2);
+                document.getElementById('totalIncomeInput').value = ''; 
+            } else {
+                alert('Please enter a valid total income.');
+            }
+        }
+
+        function submitAllExpenses() {
+            const rent = parseFloat(document.getElementById('rentInput').value) || 0;
+            const groceries = parseFloat(document.getElementById('groceriesInput').value) || 0;
+            const transportation = parseFloat(document.getElementById('transportationInput').value) || 0;
+            const entertainment = parseFloat(document.getElementById('entertainmentInput').value) || 0;
+            const otherExpenses = parseFloat(document.getElementById('otherExpensesInput').value) || 0;
+
+            const totalExpense = rent + groceries + transportation + entertainment + otherExpenses;
+
+            if (totalExpense > 0) {
+                if (totalExpense <= totalBalance) {
+                    totalExpenses += totalExpense;
+                    totalBalance -= totalExpense;
+                    updateLocalStorage();
+                    document.getElementById('expenses').innerText = totalExpenses.toFixed(2);
+                    document.getElementById('balance').innerText = totalBalance.toFixed(2);
+                    
+                    
+                    document.getElementById('rentInput').value = '';
+                    document.getElementById('groceriesInput').value = '';
+                    document.getElementById('transportationInput').value = '';
+                    document.getElementById('entertainmentInput').value = '';
+                    document.getElementById('otherExpensesInput').value = '';
+                } else {
+                    alert('Total expenses exceed current balance.');
+                }
+            } else {
+                alert('Please enter at least one expense amount.');
+            }
+        }
+
+        function updateLocalStorage() {
+            localStorage.setItem('balance', totalBalance);
+            localStorage.setItem('expenses', totalExpenses);
+        }
+
+
+        function logout(){
+
+            window.location.href = './index.html';
+
+            
+           
+        }
+        function clearTransactions() {
+    totalBalance = 0;
+    totalExpenses = 0;
+    updateLocalStorage();
+
+    document.getElementById('balance').innerText = totalBalance.toFixed(2);
+    document.getElementById('expenses').innerText = totalExpenses.toFixed(2)
+        }
+    </script>
+</body>
+</html>
